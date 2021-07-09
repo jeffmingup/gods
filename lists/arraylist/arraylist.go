@@ -10,7 +10,7 @@ type List struct {
 	size     int
 }
 
-const GrowthFactor = float32(2.0)
+const growthFactor = float32(2.0)
 const shrinkFactor = float32(0.25)
 
 func assertListImplementation() {
@@ -121,13 +121,19 @@ func (list *List) Add(values ...interface{}) {
 }
 
 //数组扩容
-func (list *List) growBy(size int) {
-	if cap(list.elements)+size <= list.Size() {
-		return
+func (list *List) growBy(n int) {
+	// if cap(list.elements)+n <= list.Size() {
+	// 	return
+	// }
+	// //小心list.size的初始零值，可以直接加上size
+	// newCapacity := (list.size + n) * int(GrowthFactor)
+	// list.reSize(newCapacity)
+	// When capacity is reached, grow by a factor of growthFactor and add number of elements
+	currentCapacity := cap(list.elements)
+	if list.size+n >= currentCapacity {
+		newCapacity := int(growthFactor * float32(currentCapacity+n))
+		list.reSize(newCapacity)
 	}
-	//小心list.size的初始零值，可以直接加上size
-	newCapacity := (list.size + size) * int(GrowthFactor)
-	list.reSize(newCapacity)
 }
 
 //数组缩容
